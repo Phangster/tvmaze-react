@@ -53,17 +53,16 @@ class Favourite extends React.Component{
             // console.log(favMoviesName)
             
             return(
-            <li key={id}>
                 <div className='box'>
                     <img src={image.medium} />
                     <p>{name}</p>
                 </div>
-            </li>)
+            )
         })
 
         return(
         <div className='favourite'>
-            <h4>Click on name to add to favourite list</h4>
+            <h4>Favourite Movies</h4>
             <ul>{movieList}</ul>
         </div>
         )
@@ -86,8 +85,8 @@ class App extends React.Component{
     }
 
     addFavourites(id){
-        const movieId = id;
-        this.setState({favourites: movieId})
+        const newList = this.state.favourites.concat([id])
+        this.setState({favourites: newList})
     }
 
     render(){
@@ -120,9 +119,12 @@ class App extends React.Component{
                         filterText={this.state.filterText}
                         filterUpdate={this.filterUpdate.bind(this)}
                     />
+                    
                     <Favourite 
                         favourites={this.state.favourites}
                     />
+
+                    <h4>All Movies Available</h4>
                     {movies}
                 </div>
             </ul>
