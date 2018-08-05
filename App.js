@@ -2,7 +2,9 @@ class Movie extends React.Component{
     render(){
         return(       
             <div className='box'>
-                <img src={this.props.img} />
+                <img src={this.props.img} 
+                    onClick={()=> this.props.addFavourites(this.props.id)}
+                />
                 <p>{this.props.name}</p>
             </div>
         )
@@ -36,11 +38,44 @@ class Search extends React.Component{
     }
 }
 
+class Favourite extends React.Component{
+
+    addUpdate(){
+        const id= this.id
+        this.props.favourites(id)
+    }
+
+    render(){
+        // console.log(this.props.movies)
+        // console.log(this.props.favourites)
+        const movieList = this.props.favourites.map(id => {
+            const { name, image } = results[id].show //Shows the favourite movie when the state of movie has a value
+            // console.log(favMoviesName)
+            
+            return(
+            <li key={id}>
+                <div className='box'>
+                    <img src={image.medium} />
+                    <p>{name}</p>
+                </div>
+            </li>)
+        })
+
+        return(
+        <div className='favourite'>
+            <h4>Click on name to add to favourite list</h4>
+            <ul>{movieList}</ul>
+        </div>
+        )
+    }
+}
+
 class App extends React.Component{
     constructor(props){
         super(props)
         this.state = {
-            filterText: ''
+            filterText: '',
+            favourites: []
         }
     }
 
@@ -50,7 +85,13 @@ class App extends React.Component{
         })
     }
 
+    addFavourites(id){
+        const movieId = id;
+        this.setState({favourites: movieId})
+    }
+
     render(){
+        console.log(this.state.favourites)
         const filterText = this.state.filterText
         // console.log('filterText from App.js', this.state.filterText) //able to access the child from parent
         const movies = results
@@ -59,18 +100,28 @@ class App extends React.Component{
             return movie.show.name.toLowerCase().indexOf(filterText.toLowerCase()) >=0
         })
         
-        .map((movie, index) => {
+        .map((movie, id) => {
             return(
-                <Movie key={index} name={movie.show.name} img={movie.show.image.medium}/>
+                <Movie
+                    id={id}
+                    key={id}
+                    name={movie.show.name} 
+                    img={movie.show.image.medium}
+                    addFavourites={this.addFavourites.bind(this)}
+                />
             )
         })
+
         return(
             <ul>
                 <div className='container'>
                     <h1 className='header'>TV Maze React</h1>
                     <Search 
-                    filterText={this.state.filterText}
-                    filterUpdate={this.filterUpdate.bind(this)}
+                        filterText={this.state.filterText}
+                        filterUpdate={this.filterUpdate.bind(this)}
+                    />
+                    <Favourite 
+                        favourites={this.state.favourites}
                     />
                     {movies}
                 </div>
